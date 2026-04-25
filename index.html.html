@@ -1,0 +1,413 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-sans);}
+.ks-app{padding:1.5rem 0;max-width:680px;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-mark{width:34px;height:34px;background:#0F6E56;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#9FE1CB;font-size:13px;font-weight:500;letter-spacing:-0.5px;}
+.logo-text{font-size:16px;font-weight:500;color:var(--color-text-primary);}
+.logo-sub{font-size:11px;color:var(--color-text-secondary);}
+.top-actions{display:flex;gap:8px;}
+.btn{font-size:12px;padding:6px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;color:var(--color-text-primary);white-space:nowrap;}
+.btn:hover{background:var(--color-background-secondary);}
+.btn.primary{background:#0F6E56;color:#E1F5EE;border-color:#0F6E56;}
+.btn.primary:hover{background:#085041;}
+
+.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:8px;}
+.stats-row2{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.5rem;}
+.stat-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px;}
+.stat-card.big{padding:14px 16px;}
+.stat-val{font-size:22px;font-weight:500;color:var(--color-text-primary);}
+.stat-val.lg{font-size:26px;}
+.stat-lbl{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+.stat-sub{font-size:11px;margin-top:4px;}
+.stat-card.rev .stat-val{color:#085041;}
+.stat-card.total .stat-val{color:#0C447C;}
+.stat-card.pending .stat-val{color:#854F0B;}
+.stat-card.active-c .stat-val{color:#185FA5;}
+.stat-card.closed-c .stat-val{color:#3B6D11;}
+.stat-card.conv .stat-val{color:#533AB7;}
+
+.rev-section{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px 16px;margin-bottom:1.5rem;}
+.rev-section-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:12px;}
+.rev-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.rev-bar-label{font-size:12px;color:var(--color-text-secondary);width:90px;flex-shrink:0;text-align:right;}
+.rev-bar-track{flex:1;height:8px;background:var(--color-background-secondary);border-radius:4px;overflow:hidden;}
+.rev-bar-fill{height:100%;border-radius:4px;transition:width 0.4s;}
+.rev-bar-val{font-size:12px;font-weight:500;color:var(--color-text-primary);width:80px;text-align:right;flex-shrink:0;}
+.collection-rate{display:flex;align-items:center;gap:12px;padding-top:10px;border-top:0.5px solid var(--color-border-tertiary);margin-top:4px;}
+.cr-label{font-size:12px;color:var(--color-text-secondary);}
+.cr-track{flex:1;height:10px;background:var(--color-background-secondary);border-radius:5px;overflow:hidden;}
+.cr-fill{height:100%;background:#1D9E75;border-radius:5px;}
+.cr-pct{font-size:13px;font-weight:500;color:#085041;}
+
+.pipeline-bar{display:flex;gap:3px;height:6px;border-radius:3px;overflow:hidden;margin-bottom:1.5rem;}
+.pb-seg{height:100%;}
+
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.section-title{font-size:14px;font-weight:500;color:var(--color-text-primary);}
+.filters{display:flex;gap:6px;flex-wrap:wrap;}
+.chip{font-size:11px;padding:3px 10px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;color:var(--color-text-secondary);}
+.chip.on{background:#0F6E56;color:#E1F5EE;border-color:#0F6E56;}
+
+.clients-list{display:flex;flex-direction:column;gap:8px;margin-bottom:1.5rem;}
+.client-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px 16px;cursor:pointer;transition:border-color 0.15s;}
+.client-card:hover{border-color:var(--color-border-secondary);}
+.client-card.expanded{border-color:#1D9E75;}
+.cc-top{display:flex;align-items:flex-start;gap:10px;}
+.avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0;}
+.av-teal{background:#E1F5EE;color:#085041;}
+.av-blue{background:#E6F1FB;color:#0C447C;}
+.av-amber{background:#FAEEDA;color:#633806;}
+.av-coral{background:#FAECE7;color:#712B13;}
+.av-purple{background:#EEEDFE;color:#3C3489;}
+.cc-meta{flex:1;min-width:0;}
+.cc-name{font-size:14px;font-weight:500;color:var(--color-text-primary);}
+.cc-industry{font-size:12px;color:var(--color-text-secondary);margin-top:1px;}
+.cc-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.status-pill{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:500;}
+.sp-lead{background:#E6F1FB;color:#0C447C;}
+.sp-active{background:#E1F5EE;color:#085041;}
+.sp-proposal{background:#FAEEDA;color:#633806;}
+.sp-closed{background:#EAF3DE;color:#27500A;}
+.sp-lost{background:#FCEBEB;color:#791F1F;}
+.cc-revenue{font-size:13px;font-weight:500;color:#085041;}
+.cc-body{margin-top:12px;padding-top:12px;border-top:0.5px solid var(--color-border-tertiary);}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin-bottom:12px;}
+.dg-lbl{font-size:11px;color:var(--color-text-secondary);margin-bottom:2px;}
+.dg-val{font-size:13px;color:var(--color-text-primary);}
+.dg-val a{color:var(--color-text-info);text-decoration:none;}
+.notes-block{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;margin-bottom:10px;}
+.notes-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:4px;}
+.notes-text{font-size:12px;color:var(--color-text-primary);line-height:1.5;}
+.cc-actions{display:flex;gap:6px;flex-wrap:wrap;}
+.empty-state{text-align:center;padding:3rem 0;color:var(--color-text-secondary);font-size:13px;}
+
+.modal-bg{background:rgba(0,0,0,0.35);border-radius:var(--border-radius-lg);padding:2rem;display:flex;align-items:flex-start;justify-content:center;margin-bottom:1.5rem;}
+.modal{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-secondary);padding:1.25rem;width:100%;max-width:500px;}
+.modal-title{font-size:15px;font-weight:500;margin-bottom:1rem;color:var(--color-text-primary);}
+.form-row{margin-bottom:10px;}
+.form-row label{display:block;font-size:11px;color:var(--color-text-secondary);margin-bottom:4px;}
+.form-row input,.form-row select,.form-row textarea{width:100%;font-size:13px;}
+.form-row textarea{min-height:64px;resize:none;font-family:var(--font-sans);}
+.form-2col{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1rem;}
+.search-bar{margin-bottom:1rem;}
+.search-bar input{width:100%;font-size:13px;}
+</style>
+
+<div class="ks-app">
+<h2 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Kerala Studio CRM — client and revenue tracker</h2>
+
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-mark">KS</div>
+    <div>
+      <div class="logo-text">Kerala Studio</div>
+      <div class="logo-sub">Client CRM</div>
+    </div>
+  </div>
+  <div class="top-actions">
+    <button class="btn" onclick="exportCSV()">Export CSV</button>
+    <button class="btn primary" onclick="showAddForm()">+ Add client</button>
+  </div>
+</div>
+
+<div class="stats-row" id="stats-row-top"></div>
+<div class="stats-row2" id="stats-row-bot"></div>
+
+<div class="rev-section" id="rev-section"></div>
+
+<div id="pipeline-bar" class="pipeline-bar"></div>
+
+<div id="add-form-wrap" style="display:none;">
+  <div class="modal-bg">
+    <div class="modal">
+      <div class="modal-title" id="form-title">Add new client</div>
+      <div class="form-2col">
+        <div class="form-row"><label>Company name *</label><input id="f-name" type="text" placeholder="e.g. Malabar Spices Ltd" /></div>
+        <div class="form-row"><label>Contact person</label><input id="f-contact" type="text" placeholder="Full name" /></div>
+      </div>
+      <div class="form-2col">
+        <div class="form-row"><label>Phone</label><input id="f-phone" type="text" placeholder="+91 98..." /></div>
+        <div class="form-row"><label>Email</label><input id="f-email" type="text" placeholder="email@company.com" /></div>
+      </div>
+      <div class="form-2col">
+        <div class="form-row"><label>Industry</label>
+          <select id="f-industry">
+            <option>Retail</option><option>Restaurant</option><option>Healthcare</option><option>Education</option><option>Real estate</option><option>Fashion</option><option>Tech</option><option>Hospitality</option><option>Manufacturing</option><option>Other</option>
+          </select>
+        </div>
+        <div class="form-row"><label>Status</label>
+          <select id="f-status">
+            <option value="lead">Lead</option>
+            <option value="active">Active client</option>
+            <option value="proposal">Proposal sent</option>
+            <option value="closed">Project closed</option>
+            <option value="lost">Lost</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-2col">
+        <div class="form-row"><label>Project value (₹)</label><input id="f-value" type="number" placeholder="50000" /></div>
+        <div class="form-row"><label>Revenue received (₹)</label><input id="f-revenue" type="number" placeholder="25000" /></div>
+      </div>
+      <div class="form-row"><label>Website / Instagram</label><input id="f-website" type="text" placeholder="https:// or @handle" /></div>
+      <div class="form-row"><label>Project type</label>
+        <select id="f-project">
+          <option>Website design</option><option>E-commerce</option><option>Landing page</option><option>Redesign</option><option>SEO</option><option>Maintenance</option><option>Branding</option><option>Other</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Notes</label><textarea id="f-notes" placeholder="Last conversation, follow-up needed, client preferences..."></textarea></div>
+      <div class="modal-actions">
+        <button class="btn" onclick="hideForm()">Cancel</button>
+        <button class="btn primary" id="save-btn" onclick="saveClient()">Save client</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-head">
+  <span class="section-title" id="list-count">All clients</span>
+  <div class="filters">
+    <span class="chip on" data-f="all" onclick="setFilter('all',this)">All</span>
+    <span class="chip" data-f="lead" onclick="setFilter('lead',this)">Leads</span>
+    <span class="chip" data-f="active" onclick="setFilter('active',this)">Active</span>
+    <span class="chip" data-f="proposal" onclick="setFilter('proposal',this)">Proposal</span>
+    <span class="chip" data-f="closed" onclick="setFilter('closed',this)">Closed</span>
+    <span class="chip" data-f="lost" onclick="setFilter('lost',this)">Lost</span>
+  </div>
+</div>
+
+<div class="search-bar"><input type="text" id="search-input" placeholder="Search by company, contact, industry..." oninput="render()" /></div>
+<div class="clients-list" id="clients-list"></div>
+</div>
+
+<script>
+const COLORS=['av-teal','av-blue','av-amber','av-coral','av-purple'];
+const STATUS_LABEL={lead:'Lead',active:'Active client',proposal:'Proposal sent',closed:'Closed',lost:'Lost'};
+const STATUS_CLASS={lead:'sp-lead',active:'sp-active',proposal:'sp-proposal',closed:'sp-closed',lost:'sp-lost'};
+
+let clients=JSON.parse(localStorage.getItem('ks_clients')||'[]');
+let filter='all';
+let expandedId=null;
+let editingId=null;
+
+function save(){localStorage.setItem('ks_clients',JSON.stringify(clients));}
+function initials(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
+function avColor(n){return COLORS[n.charCodeAt(0)%COLORS.length];}
+function fmt(n){return '₹'+Math.round(n).toLocaleString('en-IN');}
+function pct(a,b){return b>0?Math.round((a/b)*100):0;}
+
+function setFilter(f,el){
+  filter=f;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  render();
+}
+
+function showAddForm(){
+  editingId=null;
+  document.getElementById('form-title').textContent='Add new client';
+  document.getElementById('save-btn').textContent='Save client';
+  ['f-name','f-contact','f-phone','f-email','f-website','f-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-value').value='';
+  document.getElementById('f-revenue').value='';
+  document.getElementById('f-industry').value='Retail';
+  document.getElementById('f-status').value='lead';
+  document.getElementById('f-project').value='Website design';
+  document.getElementById('add-form-wrap').style.display='block';
+}
+
+function showEditForm(id){
+  const c=clients.find(x=>x.id===id);if(!c)return;
+  editingId=id;
+  document.getElementById('form-title').textContent='Edit client';
+  document.getElementById('save-btn').textContent='Update client';
+  document.getElementById('f-name').value=c.name||'';
+  document.getElementById('f-contact').value=c.contact||'';
+  document.getElementById('f-phone').value=c.phone||'';
+  document.getElementById('f-email').value=c.email||'';
+  document.getElementById('f-website').value=c.website||'';
+  document.getElementById('f-notes').value=c.notes||'';
+  document.getElementById('f-value').value=c.value||'';
+  document.getElementById('f-revenue').value=c.revenue||'';
+  document.getElementById('f-industry').value=c.industry||'Retail';
+  document.getElementById('f-status').value=c.status||'lead';
+  document.getElementById('f-project').value=c.project||'Website design';
+  document.getElementById('add-form-wrap').style.display='block';
+}
+
+function hideForm(){document.getElementById('add-form-wrap').style.display='none';}
+
+function saveClient(){
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){alert('Company name is required');return;}
+  const data={
+    id:editingId||Date.now().toString(),
+    name,
+    contact:document.getElementById('f-contact').value.trim(),
+    phone:document.getElementById('f-phone').value.trim(),
+    email:document.getElementById('f-email').value.trim(),
+    industry:document.getElementById('f-industry').value,
+    status:document.getElementById('f-status').value,
+    value:parseFloat(document.getElementById('f-value').value)||0,
+    revenue:parseFloat(document.getElementById('f-revenue').value)||0,
+    website:document.getElementById('f-website').value.trim(),
+    project:document.getElementById('f-project').value,
+    notes:document.getElementById('f-notes').value.trim(),
+    date:editingId?(clients.find(x=>x.id===editingId)||{}).date||new Date().toISOString():new Date().toISOString()
+  };
+  if(editingId){const idx=clients.findIndex(x=>x.id===editingId);if(idx>-1)clients[idx]=data;}
+  else{clients.unshift(data);}
+  save();hideForm();render();
+}
+
+function deleteClient(id){
+  if(!confirm('Delete this client?'))return;
+  clients=clients.filter(x=>x.id!==id);
+  if(expandedId===id)expandedId=null;
+  save();render();
+}
+
+function toggleExpand(id){expandedId=expandedId===id?null:id;render();}
+
+function quickStatus(id,status){
+  if(!status)return;
+  const c=clients.find(x=>x.id===id);
+  if(c){c.status=status;save();render();}
+}
+
+function updateStats(){
+  const total=clients.length;
+  const totalSales=clients.reduce((a,c)=>a+(c.value||0),0);
+  const totalRevenue=clients.reduce((a,c)=>a+(c.revenue||0),0);
+  const pending=Math.max(0,totalSales-totalRevenue);
+  const activeCount=clients.filter(c=>c.status==='active').length;
+  const closedCount=clients.filter(c=>c.status==='closed').length;
+  const convRate=total>0?pct(clients.filter(c=>c.status==='active'||c.status==='closed').length,total):0;
+
+  document.getElementById('stats-row-top').innerHTML=`
+    <div class="stat-card big total">
+      <div class="stat-val lg">${fmt(totalSales)}</div>
+      <div class="stat-lbl">Total sales (all deals)</div>
+      <div class="stat-sub" style="color:var(--color-text-secondary)">${total} client${total!==1?'s':''} · ${closedCount} closed</div>
+    </div>
+    <div class="stat-card big rev">
+      <div class="stat-val lg">${fmt(totalRevenue)}</div>
+      <div class="stat-lbl">Money we made (collected)</div>
+      <div class="stat-sub" style="color:#854F0B">${fmt(pending)} still pending</div>
+    </div>`;
+
+  document.getElementById('stats-row-bot').innerHTML=`
+    <div class="stat-card active-c"><div class="stat-val">${activeCount}</div><div class="stat-lbl">Active projects</div></div>
+    <div class="stat-card closed-c"><div class="stat-val">${closedCount}</div><div class="stat-lbl">Completed</div></div>
+    <div class="stat-card conv"><div class="stat-val">${convRate}%</div><div class="stat-lbl">Conversion rate</div></div>`;
+
+  const collectionRate=totalSales>0?pct(totalRevenue,totalSales):0;
+  const byProject={};
+  clients.forEach(c=>{
+    const k=c.project||'Other';
+    if(!byProject[k])byProject[k]={sales:0,rev:0};
+    byProject[k].sales+=c.value||0;
+    byProject[k].rev+=c.revenue||0;
+  });
+  const sorted=Object.entries(byProject).sort((a,b)=>b[1].sales-a[1].sales).slice(0,4);
+  const maxVal=sorted.length>0?sorted[0][1].sales:1;
+
+  document.getElementById('rev-section').innerHTML=`
+    <div class="rev-section-title">Revenue breakdown</div>
+    ${sorted.map(([k,v])=>`
+      <div class="rev-bar-row">
+        <div class="rev-bar-label">${k}</div>
+        <div class="rev-bar-track"><div class="rev-bar-fill" style="width:${pct(v.sales,maxVal)}%;background:#1D9E75;"></div></div>
+        <div class="rev-bar-val">${fmt(v.sales)}</div>
+      </div>
+      <div class="rev-bar-row" style="margin-top:-4px;margin-bottom:10px;">
+        <div class="rev-bar-label" style="font-size:11px;color:var(--color-text-secondary)">collected</div>
+        <div class="rev-bar-track"><div class="rev-bar-fill" style="width:${pct(v.rev,maxVal)}%;background:#9FE1CB;"></div></div>
+        <div class="rev-bar-val" style="color:#085041;">${fmt(v.rev)}</div>
+      </div>`).join('')}
+    ${sorted.length===0?'<div style="font-size:13px;color:var(--color-text-secondary);text-align:center;padding:1rem 0;">Add clients to see the breakdown</div>':''}
+    <div class="collection-rate">
+      <div class="cr-label">Collection rate</div>
+      <div class="cr-track"><div class="cr-fill" style="width:${collectionRate}%"></div></div>
+      <div class="cr-pct">${collectionRate}%</div>
+    </div>`;
+
+  const counts={lead:0,active:0,proposal:0,closed:0,lost:0};
+  clients.forEach(c=>counts[c.status]=(counts[c.status]||0)+1);
+  const colors={lead:'#378ADD',active:'#1D9E75',proposal:'#EF9F27',closed:'#639922',lost:'#E24B4A'};
+  const pb=document.getElementById('pipeline-bar');
+  if(total===0){pb.innerHTML='';return;}
+  pb.innerHTML=Object.entries(counts).filter(([,v])=>v>0).map(([k,v])=>`<div class="pb-seg" style="flex:${v};background:${colors[k]};"></div>`).join('');
+}
+
+function render(){
+  updateStats();
+  const q=(document.getElementById('search-input').value||'').toLowerCase();
+  let list=clients;
+  if(filter!=='all')list=list.filter(c=>c.status===filter);
+  if(q)list=list.filter(c=>(c.name+c.contact+c.industry+c.project).toLowerCase().includes(q));
+  document.getElementById('list-count').textContent=`${list.length} client${list.length!==1?'s':''}${filter!=='all'?' · '+STATUS_LABEL[filter]:''}`;
+  const el=document.getElementById('clients-list');
+  if(list.length===0){el.innerHTML='<div class="empty-state">No clients yet — add your first one above</div>';return;}
+  el.innerHTML=list.map(c=>{
+    const exp=expandedId===c.id;
+    const dateStr=c.date?new Date(c.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'';
+    const collPct=c.value>0?pct(c.revenue||0,c.value):0;
+    return `<div class="client-card ${exp?'expanded':''}">
+      <div class="cc-top" onclick="toggleExpand('${c.id}')">
+        <div class="avatar ${avColor(c.name)}">${initials(c.name)}</div>
+        <div class="cc-meta">
+          <div class="cc-name">${c.name}</div>
+          <div class="cc-industry">${c.industry}${c.contact?' · '+c.contact:''}</div>
+          ${c.value?`<div style="margin-top:4px;display:flex;align-items:center;gap:6px;"><div style="flex:1;max-width:100px;height:4px;background:var(--color-background-secondary);border-radius:2px;overflow:hidden;"><div style="width:${collPct}%;height:100%;background:#1D9E75;border-radius:2px;"></div></div><span style="font-size:11px;color:var(--color-text-secondary)">${collPct}% collected</span></div>`:''}
+        </div>
+        <div class="cc-right">
+          <span class="status-pill ${STATUS_CLASS[c.status]}">${STATUS_LABEL[c.status]}</span>
+          ${c.value?`<span class="cc-revenue">${fmt(c.revenue||0)} / ${fmt(c.value)}</span>`:''}
+        </div>
+      </div>
+      ${exp?`<div class="cc-body">
+        <div class="detail-grid">
+          <div><div class="dg-lbl">Contact</div><div class="dg-val">${c.contact||'—'}</div></div>
+          <div><div class="dg-lbl">Phone</div><div class="dg-val">${c.phone?`<a href="tel:${c.phone}">${c.phone}</a>`:'—'}</div></div>
+          <div><div class="dg-lbl">Email</div><div class="dg-val">${c.email?`<a href="mailto:${c.email}">${c.email}</a>`:'—'}</div></div>
+          <div><div class="dg-lbl">Website / Instagram</div><div class="dg-val">${c.website||'—'}</div></div>
+          <div><div class="dg-lbl">Project type</div><div class="dg-val">${c.project||'—'}</div></div>
+          <div><div class="dg-lbl">Added on</div><div class="dg-val">${dateStr}</div></div>
+          <div><div class="dg-lbl">Deal value</div><div class="dg-val" style="color:#0C447C;font-weight:500">${c.value?fmt(c.value):'—'}</div></div>
+          <div><div class="dg-lbl">Collected</div><div class="dg-val" style="color:#085041;font-weight:500">${c.revenue?fmt(c.revenue):'—'}</div></div>
+          ${c.value&&c.revenue<c.value?`<div><div class="dg-lbl">Still pending</div><div class="dg-val" style="color:#854F0B;font-weight:500">${fmt(c.value-c.revenue)}</div></div>`:''}
+        </div>
+        ${c.notes?`<div class="notes-block"><div class="notes-label">Notes</div><div class="notes-text">${c.notes}</div></div>`:''}
+        <div class="cc-actions">
+          <button class="btn" onclick="showEditForm('${c.id}');event.stopPropagation()">Edit</button>
+          <select onchange="quickStatus('${c.id}',this.value);event.stopPropagation()" style="font-size:12px;padding:5px 8px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;">
+            <option value="">Change status...</option>
+            <option value="lead">Lead</option><option value="active">Active client</option><option value="proposal">Proposal sent</option><option value="closed">Closed</option><option value="lost">Lost</option>
+          </select>
+          ${c.phone?`<button class="btn" onclick="window.location='tel:${c.phone}';event.stopPropagation()">Call</button>`:''}
+          ${c.email?`<button class="btn" onclick="window.location='mailto:${c.email}';event.stopPropagation()">Email</button>`:''}
+          <button class="btn" style="color:#A32D2D;border-color:#F7C1C1;" onclick="deleteClient('${c.id}');event.stopPropagation()">Delete</button>
+        </div>
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function exportCSV(){
+  if(clients.length===0){alert('No clients to export.');return;}
+  const headers=['Company','Contact','Phone','Email','Industry','Status','Project','Deal value (INR)','Collected (INR)','Pending (INR)','Website','Notes','Date added'];
+  const rows=clients.map(c=>[c.name,c.contact,c.phone,c.email,c.industry,STATUS_LABEL[c.status],c.project,c.value||0,c.revenue||0,Math.max(0,(c.value||0)-(c.revenue||0)),c.website,c.notes,c.date?new Date(c.date).toLocaleDateString():''].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
+  const csv=[headers.join(','),...rows].join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download='kerala-studio-clients.csv';
+  a.click();
+}
+
+render();
+</script>
